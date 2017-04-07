@@ -1,0 +1,331 @@
+                        .module main.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile source\main.c
+ 0000                   .dbfile D:\monitor\software\source\main.c
+ 0000                   .dbfunc e AT_init _AT_init fV
+                        .even
+ 0000           _AT_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 18
+ 0000           ; #include "define.h"
+ 0000           ; #include "uart.h"
+ 0000           ; #include "eeprom1.h"
+ 0000           ; #include "string.h"
+ 0000           ; 
+ 0000           ; 
+ 0000           ; u8 okflag;
+ 0000           ; u8 errflag;
+ 0000           ; u8 readflag;
+ 0000           ; u8 keyflag;
+ 0000           ; u8 key[10];
+ 0000           ; u8 key_old[10];
+ 0000           ; u8 phnum[12];
+ 0000           ; u8 mstxt[100];
+ 0000           ; u8 shefang;
+ 0000           ; u8 newms;
+ 0000           ; void AT_init(void)
+ 0000           ; {
+ 0000                   .dbline 19
+ 0000           ;       okflag = 0;
+ 0000 2224              clr R2
+ 0002 20928900          sts _okflag,R2
+ 0006                   .dbline 20
+ 0006           ;       USART_send_str("AT+CMGF=1");//设置TXT 格式
+ 0006 00E0              ldi R16,<L2
+ 0008 10E0              ldi R17,>L2
+ 000A 0E940000          xcall _USART_send_str
+ 000E           L3:
+ 000E                   .dbline 21
+ 000E           ;       while(!okflag);
+ 000E           L4:
+ 000E                   .dbline 21
+ 000E 20908900          lds R2,_okflag
+ 0012 2220              tst R2
+ 0014 E1F3              breq L3
+ 0016           X0:
+ 0016                   .dbline 22
+ 0016           ;       okflag = 0;
+ 0016 2224              clr R2
+ 0018 20928900          sts _okflag,R2
+ 001C                   .dbline 23
+ 001C           ;       USART_send_str("ATS0");//设置自动接听
+ 001C 00E0              ldi R16,<L6
+ 001E 10E0              ldi R17,>L6
+ 0020 0E940000          xcall _USART_send_str
+ 0024           L7:
+ 0024                   .dbline 24
+ 0024           ;       while(!okflag);
+ 0024           L8:
+ 0024                   .dbline 24
+ 0024 20908900          lds R2,_okflag
+ 0028 2220              tst R2
+ 002A E1F3              breq L7
+ 002C           X1:
+ 002C                   .dbline -2
+ 002C           L1:
+ 002C                   .dbline 0 ; func end
+ 002C 0895              ret
+ 002E                   .dbend
+ 002E                   .dbfunc e main _main fV
+                        .even
+ 002E           _main::
+ 002E 2297              sbiw R28,2
+ 0030                   .dbline -1
+ 0030                   .dbline 28
+ 0030           ;       
+ 0030           ; }
+ 0030           ; void main(void )
+ 0030           ; {
+ 0030                   .dbline 29
+ 0030           ;       init_devices();
+ 0030 0E940000          xcall _init_devices
+ 0034                   .dbline 30
+ 0034           ;       AT_init();
+ 0034 E5DF              xcall _AT_init
+ 0036                   .dbline 31
+ 0036           ;       for(;;){
+ 0036           L11:
+ 0036                   .dbline 31
+ 0036                   .dbline 33
+ 0036           ; 
+ 0036           ;               if(newms){
+ 0036 20900000          lds R2,_newms
+ 003A 2220              tst R2
+ 003C 29F0              breq L15
+ 003E           X2:
+ 003E                   .dbline 33
+ 003E                   .dbline 34
+ 003E           ;                       read_message();
+ 003E 0E940000          xcall _read_message
+ 0042                   .dbline 35
+ 0042           ;                       newms = 0;
+ 0042 2224              clr R2
+ 0044 20920000          sts _newms,R2
+ 0048                   .dbline 36
+ 0048           ;               }
+ 0048           L15:
+ 0048                   .dbline 37
+ 0048           ;               keyflag = EEPROM_read_byte(key_flag_addr);
+ 0048 0EE1              ldi R16,30
+ 004A 10E0              ldi R17,0
+ 004C 0E940000          xcall _EEPROM_read_byte
+ 0050 00938600          sts _keyflag,R16
+ 0054                   .dbline 38
+ 0054           ;               if(!keyflag){
+ 0054 0023              tst R16
+ 0056 29F5              brne L17
+ 0058           X3:
+ 0058                   .dbline 38
+ 0058                   .dbline 39
+ 0058           ;                       if(okflag){
+ 0058 20908900          lds R2,_okflag
+ 005C 2220              tst R2
+ 005E 59F3              breq L11
+ 0060           X4:
+ 0060                   .dbline 39
+ 0060                   .dbline 40
+ 0060           ;                               okflag = 0;
+ 0060 2224              clr R2
+ 0062 20928900          sts _okflag,R2
+ 0066                   .dbline 41
+ 0066           ;                               if(!pass_key()){
+ 0066 0E940000          xcall _pass_key
+ 006A 0030              cpi R16,0
+ 006C 0107              cpc R16,R17
+ 006E 91F4              brne L21
+ 0070           X5:
+ 0070                   .dbline 41
+ 0070                   .dbline 42
+ 0070           ;                                       keyflag = 1;
+ 0070 81E0              ldi R24,1
+ 0072 80938600          sts _keyflag,R24
+ 0076                   .dbline 43
+ 0076           ;                                       EEPROM_write_byte(key_flag_addr,1);
+ 0076 21E0              ldi R18,1
+ 0078 0EE1              ldi R16,30
+ 007A 10E0              ldi R17,0
+ 007C 0E940000          xcall _EEPROM_write_byte
+ 0080                   .dbline 44
+ 0080           ;                                       EEPROM_write(key_addr,key,key_length);
+ 0080 86E0              ldi R24,6
+ 0082 90E0              ldi R25,0
+ 0084 9983              std y+1,R25
+ 0086 8883              std y+0,R24
+ 0088 20E0              ldi R18,<_key
+ 008A 30E0              ldi R19,>_key
+ 008C 04E1              ldi R16,20
+ 008E 10E0              ldi R17,0
+ 0090 0E940000          xcall _EEPROM_write
+ 0094                   .dbline 46
+ 0094           ; 
+ 0094           ;                               }
+ 0094           L21:
+ 0094                   .dbline 48
+ 0094           ;                               
+ 0094           ;                               if(!pass_phnum()){
+ 0094 0E940000          xcall _pass_phnum
+ 0098 5801              movw R10,R16
+ 009A 0030              cpi R16,0
+ 009C 0107              cpc R16,R17
+ 009E 59F6              brne L11
+ 00A0           X6:
+ 00A0                   .dbline 48
+ 00A0                   .dbline 49
+ 00A0           ;                                       ;
+ 00A0                   .dbline 50
+ 00A0           ;                               }
+ 00A0                   .dbline 51
+ 00A0           ;                       }       
+ 00A0                   .dbline 52
+ 00A0           ;               }
+ 00A0 CACF              xjmp L11
+ 00A2           L17:
+ 00A2                   .dbline 53
+ 00A2           ;               else{
+ 00A2                   .dbline 54
+ 00A2           ;                       if(okflag){
+ 00A2 20908900          lds R2,_okflag
+ 00A6 2220              tst R2
+ 00A8 31F2              breq L11
+ 00AA           X7:
+ 00AA                   .dbline 54
+ 00AA                   .dbline 55
+ 00AA           ;                               okflag = 0;
+ 00AA 2224              clr R2
+ 00AC 20928900          sts _okflag,R2
+ 00B0                   .dbline 56
+ 00B0           ;                               if(!pass_key()){
+ 00B0 0E940000          xcall _pass_key
+ 00B4 5801              movw R10,R16
+ 00B6 0030              cpi R16,0
+ 00B8 0107              cpc R16,R17
+ 00BA 11F5              brne L27
+ 00BC           X8:
+ 00BC                   .dbline 56
+ 00BC                   .dbline 57
+ 00BC           ;                                       EEPROM_read(key_addr,key_old,key_length);
+ 00BC 86E0              ldi R24,6
+ 00BE 90E0              ldi R25,0
+ 00C0 9983              std y+1,R25
+ 00C2 8883              std y+0,R24
+ 00C4 20E0              ldi R18,<_key_old
+ 00C6 30E0              ldi R19,>_key_old
+ 00C8 04E1              ldi R16,20
+ 00CA 10E0              ldi R17,0
+ 00CC 0E940000          xcall _EEPROM_read
+ 00D0                   .dbline 58
+ 00D0           ;                                       if(!memcmp(key,key_old,key_length)){
+ 00D0 86E0              ldi R24,6
+ 00D2 90E0              ldi R25,0
+ 00D4 9983              std y+1,R25
+ 00D6 8883              std y+0,R24
+ 00D8 20E0              ldi R18,<_key_old
+ 00DA 30E0              ldi R19,>_key_old
+ 00DC 00E0              ldi R16,<_key
+ 00DE 10E0              ldi R17,>_key
+ 00E0 0E940000          xcall _memcmp
+ 00E4 5801              movw R10,R16
+ 00E6 0030              cpi R16,0
+ 00E8 0107              cpc R16,R17
+ 00EA 51F4              brne L29
+ 00EC           X9:
+ 00EC                   .dbline 58
+ 00EC                   .dbline 59
+ 00EC           ;                                               EEPROM_write(key_addr,key,key_length);
+ 00EC 86E0              ldi R24,6
+ 00EE 90E0              ldi R25,0
+ 00F0 9983              std y+1,R25
+ 00F2 8883              std y+0,R24
+ 00F4 20E0              ldi R18,<_key
+ 00F6 30E0              ldi R19,>_key
+ 00F8 04E1              ldi R16,20
+ 00FA 10E0              ldi R17,0
+ 00FC 0E940000          xcall _EEPROM_write
+ 0100                   .dbline 60
+ 0100           ;                                       }
+ 0100           L29:
+ 0100                   .dbline 62
+ 0100           ; 
+ 0100           ;                               }
+ 0100           L27:
+ 0100                   .dbline 64
+ 0100           ;                               
+ 0100           ;                               if(!pass_phnum()){
+ 0100 0E940000          xcall _pass_phnum
+ 0104 5801              movw R10,R16
+ 0106 0030              cpi R16,0
+ 0108 0107              cpc R16,R17
+ 010A 09F0              breq X12
+ 010C 94CF              xjmp L11
+ 010E           X12:
+ 010E           X10:
+ 010E                   .dbline 64
+ 010E                   .dbline 65
+ 010E           ;                                       ;
+ 010E                   .dbline 66
+ 010E           ;                               }
+ 010E                   .dbline 67
+ 010E           ;                       }       
+ 010E                   .dbline 68
+ 010E           ;               }
+ 010E                   .dbline 71
+ 010E           ; 
+ 010E           ; 
+ 010E           ;       }
+ 010E                   .dbline 31
+ 010E                   .dbline 31
+ 010E 93CF              xjmp L11
+ 0110           X11:
+ 0110                   .dbline -2
+ 0110           L10:
+ 0110                   .dbline 0 ; func end
+ 0110 2296              adiw R28,2
+ 0112 0895              ret
+ 0114                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile D:\monitor\software\source\main.c
+ 0000           _newms::
+ 0000                   .blkb 1
+ 0001                   .dbsym e newms _newms c
+ 0001           _shefang::
+ 0001                   .blkb 1
+ 0002                   .dbsym e shefang _shefang c
+ 0002           _mstxt::
+ 0002                   .blkb 100
+ 0066                   .dbsym e mstxt _mstxt A[100:100]c
+ 0066           _phnum::
+ 0066                   .blkb 12
+ 0072                   .dbsym e phnum _phnum A[12:12]c
+ 0072           _key_old::
+ 0072                   .blkb 10
+ 007C                   .dbsym e key_old _key_old A[10:10]c
+ 007C           _key::
+ 007C                   .blkb 10
+ 0086                   .dbsym e key _key A[10:10]c
+ 0086           _keyflag::
+ 0086                   .blkb 1
+ 0087                   .dbsym e keyflag _keyflag c
+ 0087           _readflag::
+ 0087                   .blkb 1
+ 0088                   .dbsym e readflag _readflag c
+ 0088           _errflag::
+ 0088                   .blkb 1
+ 0089                   .dbsym e errflag _errflag c
+ 0089           _okflag::
+ 0089                   .blkb 1
+ 008A                   .dbsym e okflag _okflag c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile D:\monitor\software\source\main.c
+ 0000           L6:
+ 0000                   .blkb 5
+                        .area idata
+ 0000 4154533000        .byte 'A,'T,'S,48,0
+                        .area data(ram, con, rel)
+ 0005                   .dbfile D:\monitor\software\source\main.c
+ 0005           L2:
+ 0005                   .blkb 10
+                        .area idata
+ 0005 41542B434D47463D3100      .byte 'A,'T,43,'C,'M,'G,'F,61,49,0
+                        .area data(ram, con, rel)
+ 000F                   .dbfile D:\monitor\software\source\main.c
+ 000F           ; }

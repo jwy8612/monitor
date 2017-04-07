@@ -1,0 +1,60 @@
+XL
+H 1 areas 7 global symbols
+M init.c
+S _uart0_init Ref0000
+S _SPI_MasterInit Ref0000
+S _spi_init Ref0000
+S _timer0_init Ref0000
+A text size 40 flags 0
+dbfile source\init.c
+dbfile D:\monitor\software\source\init.c
+dbfunc e port_init 0 fV
+dbline FFFFFFFF 0
+dbline 6 0
+dbline 7 0
+dbline 8 4
+dbline 9 6
+dbline A 8
+dbline B A
+dbline C C
+dbline D E
+dbline E 10
+dbline FFFFFFFE 14
+dbline 0 14
+dbfunc e watchdog_init 16 fV
+dbline FFFFFFFF 16
+dbline 14 16
+dbline 15 16
+dbline FFFFFFFE 18
+dbline 0 18
+dbfunc e init_devices 1A fV
+dbline FFFFFFFF 1A
+dbline 20 1A
+dbline 22 1A
+dbline 23 1C
+dbline 24 1E
+dbline 25 20
+dbline 26 24
+dbline 27 28
+dbline 28 2C
+dbline 2A 30
+dbline 2B 34
+dbline 2C 38
+dbline 2D 3C
+dbline FFFFFFFE 3E
+dbline 0 3E
+S _port_init Def0000
+S _init_devices Def001A
+S _watchdog_init Def0016
+T 00 00 22 24 2B BA 2A BA 28 BA 27 BA 25 BA 24 BA
+R 00 00 00 00
+T 0E 00 22 BA 82 E0 81 BB 08 95
+R 00 00 00 00
+T 16 00 A8 95 08 95
+R 00 00 00 00
+T 1A 00 F8 94 F1 DF FB DF 0E 94 00 00 0E 94 00 00
+R 00 00 00 00 12 0A 03 00 12 0E 02 00
+T 28 00 0E 94 00 00 0E 94 00 00 8A E0 85 BF 80 EC
+R 00 00 00 00 12 04 00 00 12 08 01 00
+T 36 00 8B BF 81 E0 89 BF 78 94 08 95
+R 00 00 00 00

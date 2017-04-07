@@ -1,0 +1,487 @@
+                        .module func.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile source\func.c
+ 0000                   .dbfile D:\monitor\software\source\func.c
+ 0000                   .dbfunc e send_message _send_message fV
+ 0000           ;            str -> R0,R1
+                        .even
+ 0000           _send_message::
+ 0000                   .dbline -1
+ 0000                   .dbline 16
+ 0000           ; #include "define.h"
+ 0000           ; #include "uart.h"
+ 0000           ; #include "string.h"
+ 0000           ; #include "eeprom1.h"
+ 0000           ; 
+ 0000           ; extern u8 okflag;
+ 0000           ; extern u8 errflag;
+ 0000           ; extern u8 readflag;
+ 0000           ; extern u8 phnum[12];
+ 0000           ; extern u8 mstxt[100];
+ 0000           ; extern u8 key[10];
+ 0000           ; extern u8 key_old[10];
+ 0000           ; extern u8 shefang;
+ 0000           ; 
+ 0000           ; void send_message(char * str)
+ 0000           ; {
+ 0000                   .dbline 17
+ 0000           ; ;
+ 0000                   .dbline -2
+ 0000           L1:
+ 0000                   .dbline 0 ; func end
+ 0000 0895              ret
+ 0002                   .dbsym l str 0 pc
+ 0002                   .dbend
+ 0002                   .dbfunc e read_message _read_message fI
+                        .even
+ 0002           _read_message::
+ 0002 2297              sbiw R28,2
+ 0004                   .dbline -1
+ 0004                   .dbline 20
+ 0004           ; }
+ 0004           ; int read_message(void)//char * num,char * buff)
+ 0004           ; {
+ 0004                   .dbline 21
+ 0004           ;       okflag = 0;
+ 0004 2224              clr R2
+ 0006 20920000          sts _okflag,R2
+ 000A                   .dbline 22
+ 000A           ;       memset(mstxt,0,100);
+ 000A 84E6              ldi R24,100
+ 000C 90E0              ldi R25,0
+ 000E 9983              std y+1,R25
+ 0010 8883              std y+0,R24
+ 0012 2227              clr R18
+ 0014 3327              clr R19
+ 0016 00E0              ldi R16,<_mstxt
+ 0018 10E0              ldi R17,>_mstxt
+ 001A 0E940000          xcall _memset
+ 001E                   .dbline 23
+ 001E           ;       USART_send_str(" AT+CMGR=1");
+ 001E 00E0              ldi R16,<L3
+ 0020 10E0              ldi R17,>L3
+ 0022 0E940000          xcall _USART_send_str
+ 0026           L4:
+ 0026                   .dbline 24
+ 0026           ;       while((!okflag)&&(!errflag));
+ 0026           L5:
+ 0026                   .dbline 24
+ 0026 20900000          lds R2,_okflag
+ 002A 2220              tst R2
+ 002C 21F4              brne L7
+ 002E           X0:
+ 002E 20900000          lds R2,_errflag
+ 0032 2220              tst R2
+ 0034 C1F3              breq L4
+ 0036           X1:
+ 0036           L7:
+ 0036                   .dbline 25
+ 0036           ;       if(okflag)
+ 0036 20900000          lds R2,_okflag
+ 003A 2220              tst R2
+ 003C 19F0              breq L8
+ 003E           X2:
+ 003E                   .dbline 26
+ 003E           ;               return 0;
+ 003E 0027              clr R16
+ 0040 1127              clr R17
+ 0042 02C0              xjmp L2
+ 0044           L8:
+ 0044                   .dbline 28
+ 0044           ;       else 
+ 0044           ;               return -1;
+ 0044 0FEF              ldi R16,-1
+ 0046 1FEF              ldi R17,-1
+ 0048                   .dbline -2
+ 0048           L2:
+ 0048                   .dbline 0 ; func end
+ 0048 2296              adiw R28,2
+ 004A 0895              ret
+ 004C                   .dbend
+ 004C                   .dbfunc e pass_phnum _pass_phnum fI
+ 004C           ;              i -> R20
+                        .even
+ 004C           _pass_phnum::
+ 004C 4A93              st -y,R20
+ 004E 2297              sbiw R28,2
+ 0050                   .dbline -1
+ 0050                   .dbline 31
+ 0050           ; }
+ 0050           ; int pass_phnum(void)
+ 0050           ; {
+ 0050                   .dbline 33
+ 0050           ;       u8 i;
+ 0050           ;       for(i=0;i<100 - 3;i++){
+ 0050 4427              clr R20
+ 0052 23C0              xjmp L14
+ 0054           L11:
+ 0054                   .dbline 33
+ 0054                   .dbline 34
+ 0054           ;               if(memcmp(mstxt+i,"+86",3) == 0){
+ 0054 83E0              ldi R24,3
+ 0056 90E0              ldi R25,0
+ 0058 9983              std y+1,R25
+ 005A 8883              std y+0,R24
+ 005C 20E0              ldi R18,<L17
+ 005E 30E0              ldi R19,>L17
+ 0060 80E0              ldi R24,<_mstxt
+ 0062 90E0              ldi R25,>_mstxt
+ 0064 042F              mov R16,R20
+ 0066 1127              clr R17
+ 0068 080F              add R16,R24
+ 006A 191F              adc R17,R25
+ 006C 0E940000          xcall _memcmp
+ 0070 0030              cpi R16,0
+ 0072 0107              cpc R16,R17
+ 0074 89F4              brne L15
+ 0076           X3:
+ 0076                   .dbline 34
+ 0076                   .dbline 35
+ 0076           ;                       memcpy(phnum,mstxt+i+3,11);
+ 0076 8BE0              ldi R24,11
+ 0078 90E0              ldi R25,0
+ 007A 9983              std y+1,R25
+ 007C 8883              std y+0,R24
+ 007E 80E0              ldi R24,<_mstxt+3
+ 0080 90E0              ldi R25,>_mstxt+3
+ 0082 242F              mov R18,R20
+ 0084 3327              clr R19
+ 0086 280F              add R18,R24
+ 0088 391F              adc R19,R25
+ 008A 00E0              ldi R16,<_phnum
+ 008C 10E0              ldi R17,>_phnum
+ 008E 0E940000          xcall _memcpy
+ 0092                   .dbline 36
+ 0092           ;                       return 0;
+ 0092 0027              clr R16
+ 0094 1127              clr R17
+ 0096 05C0              xjmp L10
+ 0098           L15:
+ 0098                   .dbline 38
+ 0098           ;               }
+ 0098           ;       }
+ 0098           L12:
+ 0098                   .dbline 33
+ 0098 4395              inc R20
+ 009A           L14:
+ 009A                   .dbline 33
+ 009A 4136              cpi R20,97
+ 009C D8F2              brlo L11
+ 009E           X4:
+ 009E                   .dbline 39
+ 009E           ;       return -1;
+ 009E 0FEF              ldi R16,-1
+ 00A0 1FEF              ldi R17,-1
+ 00A2                   .dbline -2
+ 00A2           L10:
+ 00A2                   .dbline 0 ; func end
+ 00A2 2296              adiw R28,2
+ 00A4 4991              ld R20,y+
+ 00A6 0895              ret
+ 00A8                   .dbsym r i 20 c
+ 00A8                   .dbend
+ 00A8                   .dbfunc e pass_key _pass_key fI
+ 00A8           ;              i -> R20
+                        .even
+ 00A8           _pass_key::
+ 00A8 4A93              st -y,R20
+ 00AA 2297              sbiw R28,2
+ 00AC                   .dbline -1
+ 00AC                   .dbline 43
+ 00AC           ; }
+ 00AC           ; 
+ 00AC           ; int pass_key(void)
+ 00AC           ; {
+ 00AC                   .dbline 45
+ 00AC           ;       u8 i;
+ 00AC           ;       for(i=0;i<100 -3;i++){
+ 00AC 4427              clr R20
+ 00AE 31C0              xjmp L23
+ 00B0           L20:
+ 00B0                   .dbline 45
+ 00B0                   .dbline 46
+ 00B0           ;               if(memcmp(mstxt+i,"key",3) == 0){
+ 00B0 83E0              ldi R24,3
+ 00B2 90E0              ldi R25,0
+ 00B4 9983              std y+1,R25
+ 00B6 8883              std y+0,R24
+ 00B8 20E0              ldi R18,<L26
+ 00BA 30E0              ldi R19,>L26
+ 00BC 80E0              ldi R24,<_mstxt
+ 00BE 90E0              ldi R25,>_mstxt
+ 00C0 042F              mov R16,R20
+ 00C2 1127              clr R17
+ 00C4 080F              add R16,R24
+ 00C6 191F              adc R17,R25
+ 00C8 0E940000          xcall _memcmp
+ 00CC 0030              cpi R16,0
+ 00CE 0107              cpc R16,R17
+ 00D0 F9F4              brne L24
+ 00D2           X5:
+ 00D2                   .dbline 46
+ 00D2                   .dbline 47
+ 00D2           ;                       memcpy(key_old,mstxt+i+3,6);
+ 00D2 86E0              ldi R24,6
+ 00D4 90E0              ldi R25,0
+ 00D6 9983              std y+1,R25
+ 00D8 8883              std y+0,R24
+ 00DA 80E0              ldi R24,<_mstxt+3
+ 00DC 90E0              ldi R25,>_mstxt+3
+ 00DE 242F              mov R18,R20
+ 00E0 3327              clr R19
+ 00E2 280F              add R18,R24
+ 00E4 391F              adc R19,R25
+ 00E6 00E0              ldi R16,<_key_old
+ 00E8 10E0              ldi R17,>_key_old
+ 00EA 0E940000          xcall _memcpy
+ 00EE                   .dbline 48
+ 00EE           ;                       memcpy(key,mstxt+i+10,6);
+ 00EE 86E0              ldi R24,6
+ 00F0 90E0              ldi R25,0
+ 00F2 9983              std y+1,R25
+ 00F4 8883              std y+0,R24
+ 00F6 80E0              ldi R24,<_mstxt+10
+ 00F8 90E0              ldi R25,>_mstxt+10
+ 00FA 242F              mov R18,R20
+ 00FC 3327              clr R19
+ 00FE 280F              add R18,R24
+ 0100 391F              adc R19,R25
+ 0102 00E0              ldi R16,<_key
+ 0104 10E0              ldi R17,>_key
+ 0106 0E940000          xcall _memcpy
+ 010A                   .dbline 49
+ 010A           ;                       return 0;
+ 010A 0027              clr R16
+ 010C 1127              clr R17
+ 010E 05C0              xjmp L19
+ 0110           L24:
+ 0110                   .dbline 51
+ 0110           ;               }
+ 0110           ;       }
+ 0110           L21:
+ 0110                   .dbline 45
+ 0110 4395              inc R20
+ 0112           L23:
+ 0112                   .dbline 45
+ 0112 4136              cpi R20,97
+ 0114 68F2              brlo L20
+ 0116           X6:
+ 0116                   .dbline 52
+ 0116           ;       return -1;
+ 0116 0FEF              ldi R16,-1
+ 0118 1FEF              ldi R17,-1
+ 011A                   .dbline -2
+ 011A           L19:
+ 011A                   .dbline 0 ; func end
+ 011A 2296              adiw R28,2
+ 011C 4991              ld R20,y+
+ 011E 0895              ret
+ 0120                   .dbsym r i 20 c
+ 0120                   .dbend
+ 0120                   .dbfunc e pass_commond _pass_commond fI
+ 0120           ;              i -> R20
+                        .even
+ 0120           _pass_commond::
+ 0120 4A93              st -y,R20
+ 0122 2297              sbiw R28,2
+ 0124                   .dbline -1
+ 0124                   .dbline 56
+ 0124           ; }
+ 0124           ; 
+ 0124           ; int pass_commond(void)
+ 0124           ; {
+ 0124                   .dbline 58
+ 0124           ;       u8 i;
+ 0124           ;       for(i=0;i<100 -3;i++){
+ 0124 4427              clr R20
+ 0126 2FC0              xjmp L33
+ 0128           L30:
+ 0128                   .dbline 58
+ 0128                   .dbline 59
+ 0128           ;               if(memcmp(mstxt+i,"on",2) == 0){
+ 0128 82E0              ldi R24,2
+ 012A 90E0              ldi R25,0
+ 012C 9983              std y+1,R25
+ 012E 8883              std y+0,R24
+ 0130 20E0              ldi R18,<L36
+ 0132 30E0              ldi R19,>L36
+ 0134 80E0              ldi R24,<_mstxt
+ 0136 90E0              ldi R25,>_mstxt
+ 0138 042F              mov R16,R20
+ 013A 1127              clr R17
+ 013C 080F              add R16,R24
+ 013E 191F              adc R17,R25
+ 0140 0E940000          xcall _memcmp
+ 0144 0030              cpi R16,0
+ 0146 0107              cpc R16,R17
+ 0148 31F4              brne L34
+ 014A           X7:
+ 014A                   .dbline 59
+ 014A                   .dbline 60
+ 014A           ;                       shefang =1;
+ 014A 81E0              ldi R24,1
+ 014C 80930000          sts _shefang,R24
+ 0150                   .dbline 61
+ 0150           ;                       return 0;
+ 0150 0027              clr R16
+ 0152 1127              clr R17
+ 0154 1CC0              xjmp L29
+ 0156           L34:
+ 0156                   .dbline 63
+ 0156           ;               }
+ 0156           ;               else if(memcmp(mstxt+i,"off",3) == 0){
+ 0156 83E0              ldi R24,3
+ 0158 90E0              ldi R25,0
+ 015A 9983              std y+1,R25
+ 015C 8883              std y+0,R24
+ 015E 20E0              ldi R18,<L39
+ 0160 30E0              ldi R19,>L39
+ 0162 80E0              ldi R24,<_mstxt
+ 0164 90E0              ldi R25,>_mstxt
+ 0166 042F              mov R16,R20
+ 0168 1127              clr R17
+ 016A 080F              add R16,R24
+ 016C 191F              adc R17,R25
+ 016E 0E940000          xcall _memcmp
+ 0172 0030              cpi R16,0
+ 0174 0107              cpc R16,R17
+ 0176 31F4              brne L37
+ 0178           X8:
+ 0178                   .dbline 63
+ 0178                   .dbline 64
+ 0178           ;                       shefang =0;
+ 0178 2224              clr R2
+ 017A 20920000          sts _shefang,R2
+ 017E                   .dbline 65
+ 017E           ;                       return 0;
+ 017E 0027              clr R16
+ 0180 1127              clr R17
+ 0182 05C0              xjmp L29
+ 0184           L37:
+ 0184                   .dbline 68
+ 0184           ;               }
+ 0184           ;                       
+ 0184           ;       }
+ 0184           L31:
+ 0184                   .dbline 58
+ 0184 4395              inc R20
+ 0186           L33:
+ 0186                   .dbline 58
+ 0186 4136              cpi R20,97
+ 0188 78F2              brlo L30
+ 018A           X9:
+ 018A                   .dbline 69
+ 018A           ;       return -1;
+ 018A 0FEF              ldi R16,-1
+ 018C 1FEF              ldi R17,-1
+ 018E                   .dbline -2
+ 018E           L29:
+ 018E                   .dbline 0 ; func end
+ 018E 2296              adiw R28,2
+ 0190 4991              ld R20,y+
+ 0192 0895              ret
+ 0194                   .dbsym r i 20 c
+ 0194                   .dbend
+ 0194                   .dbfunc e phcall _phcall fV
+ 0194           ;              i -> <dead>
+ 0194           ;           buff -> y+2
+                        .even
+ 0194           _phcall::
+ 0194 6697              sbiw R28,22
+ 0196                   .dbline -1
+ 0196                   .dbline 73
+ 0196           ; }
+ 0196           ; 
+ 0196           ; void phcall(void)
+ 0196           ; {
+ 0196                   .dbline 79
+ 0196           ;       u8 buff[20];
+ 0196           ;       u8 i;
+ 0196           ; #if TEST
+ 0196           ;       phnum[]="13520813263";
+ 0196           ; #else
+ 0196           ;       EEPROM_read(phnum_addr,phnum,phnum_length);
+ 0196 8BE0              ldi R24,11
+ 0198 90E0              ldi R25,0
+ 019A 9983              std y+1,R25
+ 019C 8883              std y+0,R24
+ 019E 20E0              ldi R18,<_phnum
+ 01A0 30E0              ldi R19,>_phnum
+ 01A2 0027              clr R16
+ 01A4 1127              clr R17
+ 01A6 0E940000          xcall _EEPROM_read
+ 01AA                   .dbline 80
+ 01AA           ;       memcpy(buff,"ATD",3);
+ 01AA 83E0              ldi R24,3
+ 01AC 90E0              ldi R25,0
+ 01AE 9983              std y+1,R25
+ 01B0 8883              std y+0,R24
+ 01B2 20E0              ldi R18,<L41
+ 01B4 30E0              ldi R19,>L41
+ 01B6 8E01              movw R16,R28
+ 01B8 0E5F              subi R16,254  ; offset = 2
+ 01BA 1F4F              sbci R17,255
+ 01BC 0E940000          xcall _memcpy
+ 01C0                   .dbline 81
+ 01C0           ;       strcpy(buff+3,phnum);
+ 01C0 20E0              ldi R18,<_phnum
+ 01C2 30E0              ldi R19,>_phnum
+ 01C4 8E01              movw R16,R28
+ 01C6 0B5F              subi R16,251  ; offset = 5
+ 01C8 1F4F              sbci R17,255
+ 01CA 0E940000          xcall _strcpy
+ 01CE                   .dbline 82
+ 01CE           ;       USART_send_str(buff);
+ 01CE 8E01              movw R16,R28
+ 01D0 0E5F              subi R16,254  ; offset = 2
+ 01D2 1F4F              sbci R17,255
+ 01D4 0E940000          xcall _USART_send_str
+ 01D8                   .dbline -2
+ 01D8           L40:
+ 01D8                   .dbline 0 ; func end
+ 01D8 6696              adiw R28,22
+ 01DA 0895              ret
+ 01DC                   .dbsym l i 3 c
+ 01DC                   .dbsym l buff 2 A[20:20]c
+ 01DC                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile D:\monitor\software\source\func.c
+ 0000           L41:
+ 0000                   .blkb 4
+                        .area idata
+ 0000 41544400          .byte 'A,'T,'D,0
+                        .area data(ram, con, rel)
+ 0004                   .dbfile D:\monitor\software\source\func.c
+ 0004           L39:
+ 0004                   .blkb 4
+                        .area idata
+ 0004 6F666600          .byte 'o,'f,'f,0
+                        .area data(ram, con, rel)
+ 0008                   .dbfile D:\monitor\software\source\func.c
+ 0008           L36:
+ 0008                   .blkb 3
+                        .area idata
+ 0008 6F6E00            .byte 'o,'n,0
+                        .area data(ram, con, rel)
+ 000B                   .dbfile D:\monitor\software\source\func.c
+ 000B           L26:
+ 000B                   .blkb 4
+                        .area idata
+ 000B 6B657900          .byte 'k,'e,'y,0
+                        .area data(ram, con, rel)
+ 000F                   .dbfile D:\monitor\software\source\func.c
+ 000F           L17:
+ 000F                   .blkb 4
+                        .area idata
+ 000F 2B383600          .byte 43,56,54,0
+                        .area data(ram, con, rel)
+ 0013                   .dbfile D:\monitor\software\source\func.c
+ 0013           L3:
+ 0013                   .blkb 11
+                        .area idata
+ 0013 2041542B434D47523D3100    .byte 32,'A,'T,43,'C,'M,'G,'R,61,49,0
+                        .area data(ram, con, rel)
+ 001E                   .dbfile D:\monitor\software\source\func.c
+ 001E           ; #endif
+ 001E           ;       
+ 001E           ; }

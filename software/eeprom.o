@@ -1,0 +1,88 @@
+XL
+H 1 areas 6 global symbols
+M eeprom.c
+S push_xgset30FC Ref0000
+S pop_xgset30FC Ref0000
+A text size 7E flags 0
+dbfile source\eeprom.c
+dbfile D:\monitor\software\source\eeprom.c
+dbfunc e EEPROM_write_byte 0 fV
+dbsym r ucData 12 c
+dbsym r uiAddress 10 i
+dbline FFFFFFFF 0
+dbline 4 0
+dbline 6 0
+dbline 6 0
+dbline 8 4
+dbline 9 8
+dbline B A
+dbline D C
+dbline FFFFFFFE E
+dbline 0 E
+dbfunc e EEPROM_read_byte 10 fc
+dbsym r uiAddress 10 i
+dbline FFFFFFFF 10
+dbline 10 10
+dbline 12 10
+dbline 12 10
+dbline 14 14
+dbline 16 18
+dbline 18 1A
+dbline FFFFFFFE 1C
+dbline 0 1C
+dbfunc e EEPROM_write 1E fV
+dbsym r i 14 I
+dbsym r length A I
+dbsym r Data C pc
+dbsym r uiAddress E i
+dbline FFFFFFFF 2A
+dbline 1B 2A
+dbline 1D 2A
+dbline 1D 30
+dbline 1E 30
+dbline 1F 40
+dbline 1D 40
+dbline 1D 44
+dbline FFFFFFFE 4A
+dbline 0 4A
+dbfunc e EEPROM_read 4E fV
+dbsym r i 14 I
+dbsym r length A I
+dbsym r Data C pc
+dbsym r uiAddress E i
+dbline FFFFFFFF 5A
+dbline 22 5A
+dbline 24 5A
+dbline 24 60
+dbline 25 60
+dbline 26 70
+dbline 24 70
+dbline 24 74
+dbline FFFFFFFE 7A
+dbline 0 7A
+S _EEPROM_read Def004E
+S _EEPROM_read_byte Def0010
+S _EEPROM_write Def001E
+S _EEPROM_write_byte Def0000
+T 00 00 E1 99 FE CF 1F BB 0E BB 2D BB E2 9A E1 9A
+R 00 00 00 00
+T 0E 00 08 95
+R 00 00 00 00
+T 10 00 E1 99 FE CF 1F BB 0E BB E0 9A 0D B3 08 95
+R 00 00 00 00
+T 1E 00 0E 94 00 00 69 01 78 01 A8 84 B9 84 44 27
+R 00 00 00 00 12 04 00 00
+T 2C 00 55 27 0A C0 FA 01 EC 0D FD 1D 20 81 87 01
+R 00 00 00 00
+T 3A 00 04 0F 15 1F E0 DF 4F 5F 5F 4F 4A 15 5B 05
+R 00 00 00 00
+T 48 00 9C F3 0C 94 00 00
+R 00 00 00 00 12 06 01 00
+T 4E 00 0E 94 00 00 69 01 78 01 A8 84 B9 84 44 27
+R 00 00 00 00 12 04 00 00
+T 5C 00 55 27 0A C0 87 01 04 0F 15 1F D4 DF FA 01
+R 00 00 00 00
+T 6A 00 EC 0D FD 1D 00 83 4F 5F 5F 4F 4A 15 5B 05
+R 00 00 00 00
+T 78 00 9C F3 0C 94 00 00
+R 00 00 00 00 12 06 01 00

@@ -1,0 +1,38 @@
+XL
+H 1 areas 3 global symbols
+M spi.c
+A text size 1E flags 0
+dbfile source\spi.c
+dbfile D:\monitor\software\source\spi.c
+dbfunc e spi_init 0 fV
+dbline FFFFFFFF 0
+dbline 6 0
+dbline 7 0
+dbline 8 4
+dbline FFFFFFFE 8
+dbline 0 8
+dbfunc e SPI_MasterInit A fV
+dbline FFFFFFFF A
+dbline C A
+dbline E A
+dbline 10 10
+dbline FFFFFFFE 14
+dbline 0 14
+dbfunc e SPI_MasterTransmit 16 fV
+dbsym r cData 10 c
+dbline FFFFFFFF 16
+dbline 13 16
+dbline 15 16
+dbline 18 18
+dbline 17 18
+dbline FFFFFFFE 1C
+dbline 0 1C
+S _SPI_MasterTransmit Def0016
+S _SPI_MasterInit Def000A
+S _spi_init Def0000
+T 00 00 80 E5 8D B9 22 24 2E B8 08 95
+R 00 00 00 00
+T 0A 00 87 B3 80 6B 87 BB 81 E5 8D B9 08 95
+R 00 00 00 00
+T 16 00 0F B9 77 9B FE CF 08 95
+R 00 00 00 00

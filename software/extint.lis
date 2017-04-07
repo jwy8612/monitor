@@ -1,0 +1,112 @@
+                        .module extint.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile source\extint.c
+                        .area vector(rom, abs)
+                        .org 4
+ 0004 0C940000          jmp _int0_isr
+                        .area text(rom, con, rel)
+ 0000                   .dbfile source\extint.c
+ 0000                   .dbfile D:\monitor\software\source\extint.c
+ 0000                   .dbfunc e int0_isr _int0_isr fV
+                        .even
+ 0000           _int0_isr::
+ 0000 8A93              st -y,R24
+ 0002 8FB7              IN R24,63
+ 0004 8A93              st -y,R24
+ 0006                   .dbline -1
+ 0006                   .dbline 10
+ 0006           ; 
+ 0006           ; #include "define.h"
+ 0006           ; #include "func.h"
+ 0006           ; 
+ 0006           ; extern u8 newms;
+ 0006           ; #pragma interrupt_handler int0_isr:iv_INT0
+ 0006           ; 
+ 0006           ; extern u8 phnum[12];
+ 0006           ; void int0_isr(void)
+ 0006           ; {
+ 0006                   .dbline 11
+ 0006           ;       newms = 1;
+ 0006 81E0              ldi R24,1
+ 0008 80930000          sts _newms,R24
+ 000C                   .dbline -2
+ 000C           L1:
+ 000C                   .dbline 0 ; func end
+ 000C 8991              ld R24,y+
+ 000E 8FBF              OUT 63,R24
+ 0010 8991              ld R24,y+
+ 0012 1895              reti
+ 0014                   .dbend
+                        .area vector(rom, abs)
+                        .org 8
+ 0008 0C940A00          jmp _int1_isr
+                        .area text(rom, con, rel)
+ 0014                   .dbfile D:\monitor\software\source\extint.c
+ 0014                   .dbfunc e int1_isr _int1_isr fV
+                        .even
+ 0014           _int1_isr::
+ 0014 0A92              st -y,R0
+ 0016 1A92              st -y,R1
+ 0018 2A92              st -y,R2
+ 001A 3A92              st -y,R3
+ 001C 4A92              st -y,R4
+ 001E 5A92              st -y,R5
+ 0020 6A92              st -y,R6
+ 0022 7A92              st -y,R7
+ 0024 8A92              st -y,R8
+ 0026 9A92              st -y,R9
+ 0028 0A93              st -y,R16
+ 002A 1A93              st -y,R17
+ 002C 2A93              st -y,R18
+ 002E 3A93              st -y,R19
+ 0030 8A93              st -y,R24
+ 0032 9A93              st -y,R25
+ 0034 AA93              st -y,R26
+ 0036 BA93              st -y,R27
+ 0038 EA93              st -y,R30
+ 003A FA93              st -y,R31
+ 003C 0FB6              IN R0,63
+ 003E 0A92              st -y,R0
+ 0040                   .dbline -1
+ 0040                   .dbline 16
+ 0040           ; }
+ 0040           ; 
+ 0040           ; #pragma interrupt_handler int1_isr:iv_INT1
+ 0040           ; void int1_isr(void)
+ 0040           ; {
+ 0040                   .dbline 21
+ 0040           ;        //external interupt on INT1
+ 0040           ;        //u8 data;
+ 0040           ;        //EEPROM_read(phnum_addr,phnum,phnum_length);
+ 0040           ;       // USART_send_str(phnum);
+ 0040           ;       phcall();
+ 0040 0E940000          xcall _phcall
+ 0044                   .dbline -2
+ 0044           L2:
+ 0044                   .dbline 0 ; func end
+ 0044 0990              ld R0,y+
+ 0046 0FBE              OUT 63,R0
+ 0048 F991              ld R31,y+
+ 004A E991              ld R30,y+
+ 004C B991              ld R27,y+
+ 004E A991              ld R26,y+
+ 0050 9991              ld R25,y+
+ 0052 8991              ld R24,y+
+ 0054 3991              ld R19,y+
+ 0056 2991              ld R18,y+
+ 0058 1991              ld R17,y+
+ 005A 0991              ld R16,y+
+ 005C 9990              ld R9,y+
+ 005E 8990              ld R8,y+
+ 0060 7990              ld R7,y+
+ 0062 6990              ld R6,y+
+ 0064 5990              ld R5,y+
+ 0066 4990              ld R4,y+
+ 0068 3990              ld R3,y+
+ 006A 2990              ld R2,y+
+ 006C 1990              ld R1,y+
+ 006E 0990              ld R0,y+
+ 0070 1895              reti
+ 0072                   .dbend
+ 0072           ; }
+ 0072           ; 

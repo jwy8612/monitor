@@ -1,0 +1,4 @@
+---- WDR Matches (3 in 3 files) ----
+AVRdef.h (software\header):#define WDR() 	asm("wdr")
+Init.c (software\source):	 WDR(); //this prevents a timout on enabling
+Main.c (software\source):		//WDR();

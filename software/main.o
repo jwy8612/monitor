@@ -1,0 +1,159 @@
+XL
+H 4 areas 16 global symbols
+M main.c
+S _EEPROM_read Ref0000
+S _EEPROM_read_byte Ref0000
+S _read_message Ref0000
+S _init_devices Ref0000
+S _pass_phnum Ref0000
+S _USART_send_str Ref0000
+S _EEPROM_write Ref0000
+S _pass_key Ref0000
+S _EEPROM_write_byte Ref0000
+S _memcmp Ref0000
+A text size 114 flags 0
+dbfile source\main.c
+dbfile D:\monitor\software\source\main.c
+dbfunc e AT_init 0 fV
+dbline FFFFFFFF 0
+dbline 12 0
+dbline 13 0
+dbline 14 6
+dbline 15 E
+dbline 15 E
+dbline 16 16
+dbline 17 1C
+dbline 18 24
+dbline 18 24
+dbline FFFFFFFE 2C
+dbline 0 2C
+dbfunc e main 2E fV
+dbline FFFFFFFF 30
+dbline 1C 30
+dbline 1D 30
+dbline 1E 34
+dbline 1F 36
+dbline 1F 36
+dbline 21 36
+dbline 21 3E
+dbline 22 3E
+dbline 23 42
+dbline 24 48
+dbline 25 48
+dbline 26 54
+dbline 26 58
+dbline 27 58
+dbline 27 60
+dbline 28 60
+dbline 29 66
+dbline 29 70
+dbline 2A 70
+dbline 2B 76
+dbline 2C 80
+dbline 2E 94
+dbline 30 94
+dbline 30 A0
+dbline 31 A0
+dbline 32 A0
+dbline 33 A0
+dbline 34 A0
+dbline 35 A2
+dbline 36 A2
+dbline 36 AA
+dbline 37 AA
+dbline 38 B0
+dbline 38 BC
+dbline 39 BC
+dbline 3A D0
+dbline 3A EC
+dbline 3B EC
+dbline 3C 100
+dbline 3E 100
+dbline 40 100
+dbline 40 10E
+dbline 41 10E
+dbline 42 10E
+dbline 43 10E
+dbline 44 10E
+dbline 47 10E
+dbline 1F 10E
+dbline 1F 10E
+dbline FFFFFFFE 110
+dbline 0 110
+S _main Def002E
+S _AT_init Def0000
+A bss size 8A flags 20
+dbfile D:\monitor\software\source\main.c
+dbsym e newms 0 c
+dbsym e shefang 1 c
+dbsym e mstxt 2 A[100:100]c
+dbsym e phnum 66 A[12:12]c
+dbsym e key_old 72 A[10:10]c
+dbsym e key 7C A[10:10]c
+dbsym e keyflag 86 c
+dbsym e readflag 87 c
+dbsym e errflag 88 c
+dbsym e okflag 89 c
+S _shefang Def0001
+S _errflag Def0088
+S _keyflag Def0086
+S _key_old Def0072
+S _phnum Def0066
+S _newms Def0000
+S _readflag Def0087
+S _mstxt Def0002
+S _key Def007C
+S _okflag Def0089
+A data size F flags 20
+dbfile D:\monitor\software\source\main.c
+A idata size F flags 0
+T 00 00 22 24 20 92 89 00 00 E0
+R 00 00 00 00 00 06 01 00 20 08 02 00 05 00
+T 08 00 10 E0 0E 94 00 00 20 90
+R 00 00 00 00 40 02 02 00 05 00 12 06 05 00
+T 10 00 89 00 22 20 E1 F3 22 24 20 92 89 00
+R 00 00 00 00 00 02 01 00 00 0C 01 00
+T 1C 00 00 E0 10 E0
+R 00 00 00 00 20 02 02 00 00 00 40 04 02 00 00 00
+T 20 00 0E 94 00 00 20 90 89 00 22 20 E1 F3 08 95
+R 00 00 00 00 12 04 05 00 00 08 01 00
+T 2E 00 22 97 0E 94 00 00 E5 DF 20 90 00 00 22 20
+R 00 00 00 00 12 06 03 00 00 0C 01 00
+T 3C 00 29 F0 0E 94 00 00 22 24 20 92 00 00 0E E1
+R 00 00 00 00 12 06 02 00 00 0C 01 00
+T 4A 00 10 E0 0E 94 00 00 00 93 86 00 00 23 29 F5
+R 00 00 00 00 12 06 01 00 00 0A 01 00
+T 58 00 20 90 89 00 22 20 59 F3 22 24 20 92 89 00
+R 00 00 00 00 00 04 01 00 00 0E 01 00
+T 66 00 0E 94 00 00 00 30 01 07 91 F4 81 E0 80 93
+R 00 00 00 00 12 04 07 00
+T 74 00 86 00 21 E0 0E E1 10 E0 0E 94 00 00 86 E0
+R 00 00 00 00 00 02 01 00 12 0C 08 00
+T 82 00 90 E0 99 83 88 83 20 E0 30 E0 04 E1 10 E0
+R 00 00 00 00 20 08 01 00 7C 00 40 0A 01 00 7C 00
+T 90 00 0E 94 00 00 0E 94 00 00 58 01 00 30 01 07
+R 00 00 00 00 12 04 06 00 12 08 04 00
+T 9E 00 59 F6 CA CF 20 90 89 00 22 20 31 F2 22 24
+R 00 00 00 00 00 08 01 00
+T AC 00 20 92 89 00 0E 94 00 00 58 01 00 30 01 07
+R 00 00 00 00 00 04 01 00 12 08 07 00
+T BA 00 11 F5 86 E0 90 E0 99 83 88 83 20 E0 30 E0
+R 00 00 00 00 20 0C 01 00 72 00 40 0E 01 00 72 00
+T C8 00 04 E1 10 E0 0E 94 00 00 86 E0 90 E0 99 83
+R 00 00 00 00 12 08 00 00
+T D6 00 88 83 20 E0 30 E0
+R 00 00 00 00 20 04 01 00 72 00 40 06 01 00 72 00
+T DC 00 00 E0 10 E0
+R 00 00 00 00 20 02 01 00 7C 00 40 04 01 00 7C 00
+T E0 00 0E 94 00 00 58 01 00 30 01 07 51 F4 86 E0
+R 00 00 00 00 12 04 09 00
+T EE 00 90 E0 99 83 88 83 20 E0 30 E0 04 E1 10 E0
+R 00 00 00 00 20 08 01 00 7C 00 40 0A 01 00 7C 00
+T FC 00 0E 94 00 00 0E 94 00 00 58 01 00 30 01 07
+R 00 00 00 00 12 04 06 00 12 08 04 00
+T 0A 01 09 F0 94 CF 93 CF 22 96 08 95
+R 00 00 00 00
+T 00 00 41 54 53 30 00
+R 00 00 03 00
+T 05 00 41 54 2B 43 4D 47 46 3D 31 00
+R 00 00 03 00

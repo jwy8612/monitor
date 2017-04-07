@@ -1,0 +1,85 @@
+                        .module spi.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile source\spi.c
+ 0000                   .dbfile D:\monitor\software\source\spi.c
+ 0000                   .dbfunc e spi_init _spi_init fV
+                        .even
+ 0000           _spi_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 6
+ 0000           ; #include "define.h"
+ 0000           ; 
+ 0000           ; //SPI initialize
+ 0000           ; // clock rate: 2764749hz
+ 0000           ; void spi_init(void)
+ 0000           ; {
+ 0000                   .dbline 7
+ 0000           ;        SPCR = 0x50; //setup SPI
+ 0000 80E5              ldi R24,80
+ 0002 8DB9              out 0xd,R24
+ 0004                   .dbline 8
+ 0004           ;        SPSR = 0x00; //setup SPI
+ 0004 2224              clr R2
+ 0006 2EB8              out 0xe,R2
+ 0008                   .dbline -2
+ 0008           L1:
+ 0008                   .dbline 0 ; func end
+ 0008 0895              ret
+ 000A                   .dbend
+ 000A                   .dbfunc e SPI_MasterInit _SPI_MasterInit fV
+                        .even
+ 000A           _SPI_MasterInit::
+ 000A                   .dbline -1
+ 000A                   .dbline 12
+ 000A           ; }
+ 000A           ; 
+ 000A           ; void SPI_MasterInit(void)
+ 000A           ; {
+ 000A                   .dbline 14
+ 000A           ;       /* 设置MOSI 和SCK 为输出，其他为输入 */
+ 000A           ;       DDRB |= (1<<5)|(1<<7)|(1<<4);
+ 000A 87B3              in R24,0x17
+ 000C 806B              ori R24,176
+ 000E 87BB              out 0x17,R24
+ 0010                   .dbline 16
+ 0010           ;       /* 使能SPI 主机模式，设置时钟速率为fck/16 */
+ 0010           ;       SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
+ 0010 81E5              ldi R24,81
+ 0012 8DB9              out 0xd,R24
+ 0014                   .dbline -2
+ 0014           L2:
+ 0014                   .dbline 0 ; func end
+ 0014 0895              ret
+ 0016                   .dbend
+ 0016                   .dbfunc e SPI_MasterTransmit _SPI_MasterTransmit fV
+ 0016           ;          cData -> R16
+                        .even
+ 0016           _SPI_MasterTransmit::
+ 0016                   .dbline -1
+ 0016                   .dbline 19
+ 0016           ; }
+ 0016           ; void SPI_MasterTransmit(u8 cData)
+ 0016           ; {
+ 0016                   .dbline 21
+ 0016           ;       /* 启动数据传输 */
+ 0016           ;       SPDR = cData;
+ 0016 0FB9              out 0xf,R16
+ 0018           L4:
+ 0018                   .dbline 24
+ 0018           ;       /* 等待传输结束 */
+ 0018           ;       while(!(SPSR & (1<<SPIF)))
+ 0018           ;       ;
+ 0018           L5:
+ 0018                   .dbline 23
+ 0018 779B              sbis 0xe,7
+ 001A FECF              rjmp L4
+ 001C           X0:
+ 001C                   .dbline -2
+ 001C           L3:
+ 001C                   .dbline 0 ; func end
+ 001C 0895              ret
+ 001E                   .dbsym r cData 16 c
+ 001E                   .dbend
+ 001E           ; }
+ 001E           ; 
+ 001E           ; 

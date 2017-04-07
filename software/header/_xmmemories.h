@@ -1,0 +1,313 @@
+#ifndef ___xmmemories_h
+#define ___xmmemories_h
+
+/* XMegaXXX memory header file
+ * to be included by ioxmXXXv.h
+ */
+
+/* 2008/03/24   initial version for XMegaXXXA1
+   2008/07/08   fits for all XMegaA parts now
+   2009/03/23   changed to #if...#endif instead of #elif
+   2009/04/10   added #define EXTERNAL_SRAM
+ */
+
+/*************************************************************/
+
+/* for all parts valid are: */
+
+#define PROGMEM_START 0x0000
+#define APP_SECTION_START 0x0000
+
+#define DATAMEM_START 0x0000
+#define IO_START 0x0000
+#define IO_SIZE 0x1000
+#define IO_END 0x0FFF
+#define MAPPED_EEPROM_START 0x1000
+#define INTERNAL_SRAM_START 0x2000
+#define EEPROM_START 0x0000
+
+
+/* part dependent are: */
+
+#ifdef __ioxm64A1v_h
+
+#define PROGMEM_SIZE 0x11000
+#define APP_SECTION_SIZE 0x10000
+#define APPTABLE_SECTION_START 0xF000
+#define APPTABLE_SECTION_SIZE 0x1000
+#define BOOT_SECTION_START 0x10000
+#define BOOT_SECTION_SIZE 0x1000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x1000
+#define EXTERNAL_SRAM_START 0x3000
+#define EXTERNAL_SRAM
+
+/* */
+#else
+#ifdef __ioxm128A1v_h
+
+#define PROGMEM_SIZE 0x22000
+#define APP_SECTION_SIZE 0x20000
+#define APPTABLE_SECTION_START 0x1E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x20000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x2000
+#define EXTERNAL_SRAM_START 0x4000
+#define EXTERNAL_SRAM
+
+/* */
+#else
+#ifdef __ioxm128A1revDv_h
+
+#define PROGMEM_SIZE 0x22000
+#define APP_SECTION_SIZE 0x20000
+#define APPTABLE_SECTION_START 0x1E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x20000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x2000
+#define EXTERNAL_SRAM_START 0x4000
+#define EXTERNAL_SRAM
+
+/* */
+#else
+#ifdef __ioxm192A1v_h
+
+#define PROGMEM_SIZE 0x32000
+#define APP_SECTION_SIZE 0x30000
+#define APPTABLE_SECTION_START 0x2E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x30000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x4000
+#define EXTERNAL_SRAM_START 06000
+#define EXTERNAL_SRAM
+
+/* */
+#else
+#ifdef __ioxm256A1v_h
+
+#define PROGMEM_SIZE 0x42000
+#define APP_SECTION_SIZE 0x40000
+#define APPTABLE_SECTION_START 0x3E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x40000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x1000
+#define MAPPED_EEPROM_SIZE 0x1000
+#define INTERNAL_SRAM_SIZE 0x4000
+#define EXTERNAL_SRAM_START 0x6000
+#define EXTERNAL_SRAM
+
+/* */
+#else
+#ifdef __ioxm384A1v_h
+
+#define PROGMEM_SIZE 062000
+#define APP_SECTION_SIZE 0x60000
+#define APPTABLE_SECTION_START 0x5E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x60000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x1000
+#define MAPPED_EEPROM_SIZE 0x1000
+#define INTERNAL_SRAM_SIZE 0x8000
+#define EXTERNAL_SRAM_START 0x6000
+#define EXTERNAL_SRAM
+
+
+/* */
+#else
+#ifdef __ioxm64A3v_h
+
+#define PROGMEM_SIZE 0x11000
+#define APP_SECTION_SIZE 0x10000
+#define APPTABLE_SECTION_START 0xF000
+#define APPTABLE_SECTION_SIZE 0x1000
+#define BOOT_SECTION_START 0x10000
+#define BOOT_SECTION_SIZE 0x1000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x1000
+
+/* */
+#else
+#ifdef __ioxm128A3v_h
+
+#define PROGMEM_SIZE 0x22000
+#define APP_SECTION_SIZE 0x20000
+#define APPTABLE_SECTION_START 0x1E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x20000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x2000
+
+/* */
+#else
+#ifdef __ioxm192A3v_h
+
+#define PROGMEM_SIZE 0x32000
+#define APP_SECTION_SIZE 0x30000
+#define APPTABLE_SECTION_START 0x2E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x30000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x1000
+#define MAPPED_EEPROM_SIZE 0x1000
+#define INTERNAL_SRAM_SIZE 0x4000
+
+/* */
+#else
+#ifdef __ioxm256A3v_h
+
+#define PROGMEM_SIZE 0x42000
+#define APP_SECTION_SIZE 0x40000
+#define APPTABLE_SECTION_START 0x3E000
+#define APPTABLE_SECTION_SIZE 0x2000
+#define BOOT_SECTION_START 0x40000
+#define BOOT_SECTION_SIZE 0x2000
+
+#define EEPROM_SIZE 0x1000
+#define MAPPED_EEPROM_SIZE 0x1000
+#define INTERNAL_SRAM_SIZE 0x4000
+
+
+/* */
+#else
+#ifdef __ioxm16A4v_h
+
+#define PROGMEM_SIZE 0x5000
+#define APP_SECTION_SIZE 0x4000
+#define APPTABLE_SECTION_START 0x3000
+#define APPTABLE_SECTION_SIZE 0x1000
+#define BOOT_SECTION_START 0x4000
+#define BOOT_SECTION_SIZE 0x1000
+
+#define EEPROM_SIZE 0x0400
+#define MAPPED_EEPROM_SIZE 0x0400
+#define INTERNAL_SRAM_SIZE 0x0800
+
+/* */
+#else
+#ifdef __ioxm32A4v_h
+
+#define PROGMEM_SIZE 0x9000
+#define APP_SECTION_SIZE 0x8000
+#define APPTABLE_SECTION_START 0x7000
+#define APPTABLE_SECTION_SIZE 0x1000
+#define BOOT_SECTION_START 0x8000
+#define BOOT_SECTION_SIZE 0x1000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x1000
+
+/* */
+#else
+#ifdef __ioxm64A4v_h
+
+#define PROGMEM_SIZE 0x11000
+#define APP_SECTION_SIZE 0x10000
+#define APPTABLE_SECTION_START 0xF000
+#define APPTABLE_SECTION_SIZE 0x1000
+#define BOOT_SECTION_START 0x10000
+#define BOOT_SECTION_SIZE 0x1000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x1000
+
+/* */
+#else
+#ifdef __ioxm128A4v_h
+
+#define PROGMEM_SIZE 0x21000
+#define APP_SECTION_SIZE 0x20000
+#define APPTABLE_SECTION_START 0x1F000
+#define APPTABLE_SECTION_SIZE 0x1000
+#define BOOT_SECTION_START 0x20000
+#define BOOT_SECTION_SIZE 0x1000
+
+#define EEPROM_SIZE 0x0800
+#define MAPPED_EEPROM_SIZE 0x0800
+#define INTERNAL_SRAM_SIZE 0x2000
+
+
+/* */
+#else
+#define __error_in_header_file__
+
+
+/* endifs of xmega A4 parts: */
+#endif
+#endif
+#endif
+#endif
+/* endifs of xmega A3 parts: */
+#endif
+#endif
+#endif
+#endif
+/* endifs of xmega A1 parts: */
+#endif
+#endif
+#endif
+#endif
+#endif
+#endif
+
+
+#ifndef __error_in_header_file__
+/* other #defines calculated: */
+
+#define PROGMEM_END (PROGMEM_START + PROGMEM_SIZE - 1)
+#define APP_SECTION_END (APP_SECTION_START + APP_SECTION_SIZE - 1)
+#define APPTABLE_SECTION_END (APPTABLE_SECTION_START + APPTABLE_SECTION_SIZE - 1)
+#define BOOT_SECTION_END (BOOT_SECTION_START + BOOT_SECTION_SIZE - 1)
+
+#define EEPROM_END (EEPROM_START + EEPROM_SIZE - 1)
+#define MAPPED_EEPROM_END (MAPPED_EEPORM_START + MAPPED_EEPORM_SIZE - 1)
+#define INTERNAL_SRAM_END (INTERNAL_SRAM_START + INTERNAL_SRAM_SIZE - 1)
+
+#ifdef  EXTERNAL_SRAM
+#define EXTERNAL_SRAM_SIZE (0x1000000 - EXTERNAL_SRAM_START)
+#define EXTERNAL_SRAM_END 0xFFFFFF
+#define DATAMEM_SIZE 0x1000000
+#define DATAMEM_END EXTERNAL_SRAM_END
+#else
+#define EXTERNAL_SRAM_START 0
+#define EXTERNAL_SRAM_SIZE 0
+#define EXTERNAL_SRAM_END 0
+#define DATAMEM_SIZE (INTERNAL_SRAM_START + INTERNAL_SRAM_SIZE)
+#define DATAMEM_END INTERNAL_SRAM_END
+#endif
+
+/* */
+#else
+/* no part definition found: */
+#warning "_xmmemories.h does not support this part"
+#endif
+
+/*************************************************************/
+
+/*ja*/
+#endif
