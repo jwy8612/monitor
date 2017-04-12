@@ -2,20 +2,37 @@
 #include "uart.h"
 #include "string.h"
 #include "eeprom1.h"
+extern u8 waitResult(void);
 
 extern u8 okflag;
 extern u8 errflag;
 extern u8 readflag;
 extern u8 phnum[12];
-extern u8 mstxt[100];
-extern u8 key[10];
-extern u8 key_old[10];
 extern u8 shefang;
+u8 msFlag;
 
 void send_message(char * str)
 {
-;
+	u8 temp[30];
+	int i=0;
+	memset(temp,0,30);
+	memcpy(temp,"AT+CMGS=\"",9);
+	memcpy(temp+9,phnum,11);
+	
+	memcpy(temp+20,"\"",1);
+	USART_send_str(temp);
+	msFlag = 0;
+	while(!msFlag);
+	while(*(str++)!= 0){
+		USART_Transmit(*(str-1));
+	}
+	USART_Transmit(0x1a);
+	if(waitResult()){
+		return;
+	}
 }
+#if 0
+
 int read_message(void)//char * num,char * buff)
 {
 	okflag = 0;
@@ -68,18 +85,13 @@ int pass_commond(void)
 	}
 	return -1;
 }
-
+#endif
 void phcall(void)
 {
 	u8 buff[20];
 	u8 i;
-#if TEST
-	phnum[]="13520813263";
-#else
-	EEPROM_read(phnum_addr,phnum,phnum_length);
+	memset(buff,0,20);
 	memcpy(buff,"ATD",3);
-	strcpy(buff+3,phnum);
+	memcpy(buff+3,phnum,phnum_length);
 	USART_send_str(buff);
-#endif
-	
 }

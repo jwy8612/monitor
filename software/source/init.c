@@ -5,7 +5,7 @@
 void port_init(void)
 {
 	 PORTA = 0x00;
-	 DDRA  = 0x00;
+	 DDRA  = 0xff;
 	 PORTB = 0x00;
 	 DDRB  = 0x00;
 	 PORTC = 0x00; //m103 output only
@@ -33,9 +33,8 @@ void init_devices(void)
  //stop errant interrupts until set up
 	 CLI(); //disable all interrupts
 	 port_init();
-	 watchdog_init();
+	// watchdog_init();
 	 timer0_init();
-	 spi_init();
 	 uart0_init();
 	 SPI_MasterInit();
 

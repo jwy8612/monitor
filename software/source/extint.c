@@ -18,6 +18,6 @@ void int1_isr(void)
 	 //u8 data;
 	 //EEPROM_read(phnum_addr,phnum,phnum_length);
 	// USART_send_str(phnum);
-	phcall();
+	//phcall();
 }
 

@@ -3,8 +3,19 @@
 //UART0 initialize
 // desired baud rate: 115200
 // actual: baud rate:115198 (0.0%)
-extern okflag;
-extern u8 mstxt[100];
+extern int doneFlag;
+extern int startFlag;
+extern u8 rIndex;
+
+extern int cmdNum;
+extern int cmdLength[8];
+
+extern u8 *cmdPing;
+extern u8 *cmdPong;
+extern u8 *cmdbuff[4];
+extern u8 msFlag;
+//extern void led(int i,int enable);
+
 void uart0_init(void)
 {
 	DDRD |= 1<<1; 
@@ -79,33 +90,32 @@ void USART_send_str(unsigned char * str)		//·¢ËÍ×Ö·û´®
 void uart0_rx_isr(void)
 {
 	 //uart has received a character in UDR
-	 static u8 flag = 0;
-	 u8 data;
-	 static u8 i= 0;
-	 data = UDR;
-	 if((1==flag)&&('K'==data)){
-		 okflag = 1;
-		 i=0;
-	 }
-	 if('O'==data)
-	 	flag = 1;
-
-	 if((4==flag)&&('G'==data)){
-		 USART_send_str("ATA");
-	 }
-
-	 if((3==flag)&&('N'==data)){
-		 flag = 4;
-	 }
-	 if((2==flag)&&('I'==data)){
-		 flag = 3;
-	 }
-	 if('R'==data)
-	 	flag = 2;
+	 static u8 preData = 0;
+	 static int index=0;
 	 
-	 if(!okflag){
-		mstxt[i] = data;
+	 u8 data;
+	 data = UDR;
+	cmdbuff[rIndex][index]=data;
+	index++;
+	 if((0x0d==preData)&&(0x0a==data)){
+		 doneFlag = 1;
 	 }
-
+	if(1==doneFlag){
+		doneFlag =0;
+		if( index-2>1){
+			cmdLength[rIndex] = index-2;
+			rIndex++;
+			cmdNum++;
+			
+			if(4==rIndex){
+			  rIndex = 0;
+			}
+		}
+		index=0;
+	}
+	preData = data;
+	if(0x3e==data){
+		msFlag = 1;
+	}
 	 
 }
