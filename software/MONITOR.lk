@@ -1,1 +1,0 @@
-main.o extint.o init.o spi.o timer.o uart.o eeprom.o func.o 

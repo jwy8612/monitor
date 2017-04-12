@@ -1,0 +1,7 @@
+/si
+/pcb/History
+/software/BACKUP
+/software/*.o
+/pcb/__Previews
+/software/*.lis
+/software/MONITOR.*
