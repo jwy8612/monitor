@@ -14,7 +14,6 @@ extern u8 *cmdPing;
 extern u8 *cmdPong;
 extern u8 *cmdbuff[4];
 extern u8 msFlag;
-//extern void led(int i,int enable);
 
 void uart0_init(void)
 {
