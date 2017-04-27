@@ -65,7 +65,7 @@ void waitInfo(u8 * temp, u8 len){
 
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -100,7 +100,7 @@ u8 waitResult(void){
 
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(1==flag){
@@ -129,7 +129,7 @@ u8 waitPhnum(u8 *buff){
 			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -156,7 +156,7 @@ u8 waitCallPhnum(u8 *buff){
 			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -194,7 +194,7 @@ u8 waitKey(u8 *buff, u8 *newkey){
 			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -244,7 +244,7 @@ u8 waitCmd(void){
 	}
 	wIndex++;
 	cmdNum--;		
-	if(wIndex==4){
+	if(wIndex==3){
 		wIndex=0;
 	}
 	return flag;
@@ -308,6 +308,40 @@ void CGACT_init(u8 enable)
 
 	}
 }
+void GPSStart(void)
+{
+		USART_send_str("AT+GPS=1");
+		waitResult();
+#if 0
+		while(!waitResult()){
+			USART_send_str("AT+GPS=0");
+			if(waitResult()){
+				USART_send_str("AT+GPS=1");
+			}
+		}
+		#endif
+}
+
+void GPSClose(void)
+{
+		USART_send_str("AT+GPS=0");
+		while(!waitResult()){
+			USART_send_str("AT+GPS=0");
+
+		}
+}
+void GPSRD(int sec){
+	u8 temp[12];
+	u8 a[4];
+	memset(temp,0,12);
+	memcpy(temp,"AT+GPSRD=",9);
+	//itoa(a,sec,10);
+	strcat(temp,a);
+	//USART_send_str(temp);
+	USART_send_str("AT+GPSRD=5");
+	waitResult();
+}
+
 void CIPStart(void)
 {
 		USART_send_str("AT+CIPSTART=\"TCP\",\"114.215.44.97\",9898");
@@ -331,7 +365,9 @@ u8 CIPSend(char * str){
 	msFlag = 0;
 	while(!msFlag);
 	
-	USART_send_str(str);
+	while(*(str++)!= 0){
+		USART_Transmit(*(str-1));
+	}
 	
 	USART_Transmit(0x1a);
 	if(waitResult()){
@@ -345,8 +381,14 @@ u8 CIPSend(char * str){
 void main(void ){
 	u8 ret;
 	int i;
-	u8 cmdbufferr[4][128];
+	int j;
+	u8 cmdbufferr[3][100];
 	u8 tempPhNum[12];
+	u8 gpsFlag=0;
+	u8 velFlag=0;
+	u8 lat[12];
+	u8 lng[12];
+	u8 vel[12];
 	
 	for(i=0;i<4;i++){
 		cmdbuff[i] = cmdbufferr[i];
@@ -354,6 +396,10 @@ void main(void ){
 	init_devices();
 	waitInfo("+CREG: 1",8);
 	led(0,1);
+	
+	GPSStart();
+	GPSRD(60);
+	led(5,1);
 	CGATT_init(1);
 	
 	led(1,1);
@@ -364,16 +410,66 @@ void main(void ){
 	led(3,1);
 	CIPStart();
 	led(4,1);
+	
 	while(1){
 		if(cmdNum>0){
+			
+			led(6,1);
+			EEPROM_write(0,cmdbuff[wIndex],cmdLength[wIndex]);
 			for(i=0;i<cmdLength[wIndex]-3;i++){
 				if(!memcmp(cmdbuff[wIndex]+i,"RING",4)){
 					status = RING;
 				}
 			}
+			for(i=0;i<cmdLength[wIndex]-5;i++){
+				if(!memcmp(cmdbuff[wIndex]+i,"GPGGA,",6)){
+					i+=5;
+					gpsFlag = 1;
+					memset(lat,0,12);
+					memset(lng,0,12);
+					memset(vel,0,12);
+					continue;
+				}
+				if(gpsFlag){
+					
+					gpsFlag =0;
+					if(!memcmp(cmdbuff[wIndex]+i,",",1)){
+						if(memcmp(cmdbuff[wIndex]+i+1,",",1)){
+							lat[0]=0x30;
+							lng[0]=0x30;
+							break;
+						}
+						else{
+							memcpy(lat,cmdbuff[wIndex]+i+2,9);
+							memcpy(lat,cmdbuff[wIndex]+i+13,10);
+							status = GPS;
+							break;
+						}
+					
+					}
+				}
+
+			}
+			for(i=0;i<cmdLength[wIndex]-5;i++){
+				if(!memcmp(cmdbuff[wIndex]+i,"GPVTG,",6)){
+					i+=5;
+					velFlag = 1;
+					memset(vel,0,12);
+					continue;
+				}
+				if(!memcmp(cmdbuff[wIndex]+i,"N,",2)){
+					j=0;
+					while(*(cmdbuff[wIndex]+i+2+j)!=','){
+						vel[j]=*(cmdbuff[wIndex]+i+2+j);
+						j++;
+					}
+					status = GPS;
+					break;
+				}
+			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 		}
@@ -397,20 +493,35 @@ void main(void ){
 
 					break;
 				}
+				case GPS:{
+					
+					u8 tempbuff[100];
+					
+					led(7,1);
+					memset(tempbuff,0,100);
+					memcpy(tempbuff,"{\"id\":\"",7);
+					strcat(tempbuff,"1234567887654321");
+					strcat(tempbuff,"\",\"lat\":\"");
+					strcat(tempbuff,lat);
+					strcat(tempbuff,"\",\"lng\":\"");
+					strcat(tempbuff,lng);
+					strcat(tempbuff,"\",\"vel\":\"");
+					strcat(tempbuff,vel);
+					strcat(tempbuff,"\",\"cat\":\"");
+					strcat(tempbuff,"85");
+					strcat(tempbuff,"\"}");
+					CIPSend(tempbuff);
+					status = IDLE;
+					break;
+				}
 				default:{
 					break;
 				}
 		
 			}
 
-
-
-
-
-			if(minute){
-				minute=0;
-				CIPSend("{\"id\":\"1234567887654321\",\"lat\":\"100\",\"lng\":\"80\"}");
-				led(7,1);
-			}
 	}
 }
+
+"{\"id\":\"1234567887654321\",\"lat\":\",,M,,0000*\",\"lng\":\"\",\"vel\":\"\",\"cat\":\"85\"}"
+

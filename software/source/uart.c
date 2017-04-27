@@ -106,7 +106,7 @@ void uart0_rx_isr(void)
 			rIndex++;
 			cmdNum++;
 			
-			if(4==rIndex){
+			if(3==rIndex){
 			  rIndex = 0;
 			}
 		}
