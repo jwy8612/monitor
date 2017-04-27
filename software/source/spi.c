@@ -55,25 +55,29 @@ void ADXL345_Write(u8 addr, u8 data){
 
 void ADXL345_Init(){
 	;
-	#if 0
     while(ADXL345_Read(0x00) != DeviceID);
+	ADXL345_Write(THRESH_ACT_ADDR,0x10);   //活动阈值g
+	ADXL345_Write(ACT_INACT_CTL_ADDR,0b01110000);   //直流耦合,xyz使能运动中断
+	ADXL345_Write(BW_RATE_ADDR,0x0a);	//速率设定为100Hz, 低速率模式，参考pdf13页
+	ADXL345_Write(THRESH_ACT_ADDR,0x10);   //活动阈值g
+	ADXL345_Write(THRESH_ACT_ADDR,0x10);   //活动阈值g
+	ADXL345_Write(THRESH_ACT_ADDR,0x10);   //活动阈值g
+	ADXL345_Write(THRESH_ACT_ADDR,0x10);   //活动阈值g
     
-    WriteADXL(DATA_FORMAT_ADDR,0x0B);   //测量范围,正负16g，13位模式
-    WriteADXL(BW_RATE_ADDR,0x1B);   //速率设定为100Hz, 低速率模式，参考pdf13页
-    WriteADXL(OFSX_ADDR,0x00);   //X 偏移量 根据测试传感器的状态写入pdf29页
-    WriteADXL(OFSY_ADDR,0x05);   //Y 偏移量 根据测试传感器的状态写入pdf29页
-    WriteADXL(OFSZ_ADDR,0x09);   //Z 偏移量 根据测试传感器的状态写入pdf29页
+     ADXL345_Write(DATA_FORMAT_ADDR,0x0B);   //测量范围,正负16g，13位模式
+     ADXL345_Write(OFSX_ADDR,0x00);   //X 偏移量 根据测试传感器的状态写入pdf29页
+     ADXL345_Write(OFSY_ADDR,0x05);   //Y 偏移量 根据测试传感器的状态写入pdf29页
+     ADXL345_Write(OFSZ_ADDR,0x09);   //Z 偏移量 根据测试传感器的状态写入pdf29页
     
-    WriteADXL(THRESH_ACT_ADDR,0x0f);    //活动阈值设定
-    WriteADXL(ACT_INACT_CTL_ADDR,0x90);     //交流耦合检测，只检查Z轴   
-    WriteADXL(INT_MAP_ADDR,0x0);
-    WriteADXL(INT_ENABLE_ADDR,0x10);    //加速度中断使能 , INT1引脚, 上升沿有效
+     ADXL345_Write(THRESH_ACT_ADDR,0x0f);    //活动阈值设定
+     ADXL345_Write(ACT_INACT_CTL_ADDR,0x90);     //交流耦合检测，只检查Z轴   
+     ADXL345_Write(INT_MAP_ADDR,0x0);
+     ADXL345_Write(INT_ENABLE_ADDR,0x10);    //加速度中断使能 , INT1引脚, 上升沿有效
     
     SetADXL_TriggerMode();
     
-    WriteADXL(POWER_CTL_ADDR,0x08);
-    Single_ReadADXL(INT_SOURCE_ADDR);  //清空器件的中断标志
-    Single_ReadADXL(FIFO_STATUS_ADDR);
-#endif
+     ADXL345_Write(POWER_CTL_ADDR,0x08);
+     ADXL345_Read(INT_SOURCE_ADDR);  //清空器件的中断标志
+     ADXL345_Read(FIFO_STATUS_ADDR);
 }
 
