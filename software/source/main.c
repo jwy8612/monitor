@@ -378,7 +378,8 @@ void main(void ){
 	u8 lat[12];
 	u8 lng[12];
 	u8 vel[12];
-	
+	u8 tmp=0;
+	u8 tt[3];
 	for(i=0;i<3;i++){
 		cmdbuff[i] = cmdbufferr[i];
 	}
@@ -406,6 +407,9 @@ void main(void ){
 			EEPROM_write(0,cmdbuff[wIndex],cmdLength[wIndex]);
 			for(i=0;i<cmdLength[wIndex]-3;i++){
 				if(!memcmp(cmdbuff[wIndex]+i,"RING",4)){
+					//////////////////////////////test
+					USART_send_str("ATA");
+					waitInfo("CONNECT",7);
 					status = RING;
 				}
 			}
@@ -420,13 +424,8 @@ void main(void ){
 						i++;
 					}
 					if(memcmp(cmdbuff[wIndex]+i+1,",",1)){
-						lat[0]=0x30;
-						lng[0]=0x30;
-						break;
-					}
-					else{
 						memcpy(lat,cmdbuff[wIndex]+i+1,10);
-						memcpy(lat,cmdbuff[wIndex]+i+14,11);
+						memcpy(lng,cmdbuff[wIndex]+i+14,11);
 						break;
 					}
 
@@ -462,6 +461,7 @@ void main(void ){
 					break;
 				}
 				case RING:{
+					break;//////////////////test
 					USART_send_str("AT+CLCC");
 					waitCallPhnum(tempPhNum);
 					if(!memcmp(tempPhNum,phnum,phnum_length)){
@@ -491,8 +491,13 @@ void main(void ){
 					strcat(tempbuff,lng);
 					strcat(tempbuff,"\",\"vel\":\"");
 					strcat(tempbuff,vel);
-					strcat(tempbuff,"\",\"cat\":\"");
-					strcat(tempbuff,"85");
+					strcat(tempbuff,"\",\"cap\":\"");
+					tmp++;
+					if(100==tmp){
+						tmp=0;
+					}
+					itoa(tt,tmp,10);
+					strcat(tempbuff,tt);
 					strcat(tempbuff,"\"}");
 					CIPSend(tempbuff);
 					status = IDLE;
