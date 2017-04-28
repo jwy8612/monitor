@@ -36,7 +36,7 @@ void init_devices(void)
 	// watchdog_init();
 	 timer0_init();
 	 uart0_init();
-	 SPI_MasterInit();
+	 //SPI_MasterInit();
 
 	 MCUCR = 0x0A;
 	 GICR  = 0xC0;
