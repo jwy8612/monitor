@@ -3,16 +3,12 @@
 //UART0 initialize
 // desired baud rate: 115200
 // actual: baud rate:115198 (0.0%)
-extern int doneFlag;
-extern int startFlag;
 extern u8 rIndex;
 
 extern int cmdNum;
-extern int cmdLength[8];
+extern int cmdLength[4];
 
-extern u8 *cmdPing;
-extern u8 *cmdPong;
-extern u8 *cmdbuff[4];
+extern u8 *cmdbuff[3];
 extern u8 msFlag;
 
 void uart0_init(void)
@@ -91,7 +87,7 @@ void uart0_rx_isr(void)
 	 //uart has received a character in UDR
 	 static u8 preData = 0;
 	 static int index=0;
-	 
+	 static u8 doneFlag;
 	 u8 data;
 	 data = UDR;
 	cmdbuff[rIndex][index]=data;

@@ -2,13 +2,11 @@
 #include "define.h"
 #include "func.h"
 
-extern u8 newms;
 #pragma interrupt_handler int0_isr:iv_INT0
 
 extern u8 phnum[12];
 void int0_isr(void)
 {
-	newms = 1;
 }
 
 #pragma interrupt_handler int1_isr:iv_INT1
