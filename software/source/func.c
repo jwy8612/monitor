@@ -2,15 +2,9 @@
 #include "uart.h"
 #include "string.h"
 #include "eeprom1.h"
-extern u8 waitResult(void);
+//extern u8 waitResult(void);
 
-extern u8 okflag;
-extern u8 errflag;
-extern u8 readflag;
-extern u8 phnum[12];
-extern u8 shefang;
-u8 msFlag;
-
+#if 0
 void send_message(char * str)
 {
 	u8 temp[30];
@@ -31,6 +25,7 @@ void send_message(char * str)
 		return;
 	}
 }
+#endif
 #if 0
 
 int read_message(void)//char * num,char * buff)
@@ -86,6 +81,7 @@ int pass_commond(void)
 	return -1;
 }
 #endif
+#if 0
 void phcall(void)
 {
 	u8 buff[20];
@@ -95,3 +91,4 @@ void phcall(void)
 	memcpy(buff+3,phnum,phnum_length);
 	USART_send_str(buff);
 }
+#endif

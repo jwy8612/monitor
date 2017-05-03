@@ -1,4 +1,5 @@
 #include "define.h"
+
 //TIMER0 initialize - prescale:1024
 // WGM: Normal
 // desired value: 1KHz
@@ -23,14 +24,12 @@ void timer0_init(void)
 #pragma interrupt_handler timer0_ovf_isr:iv_TIM0_OVF
 void timer0_ovf_isr(void)
 {
-	static int a=0;
 #ifdef CLOCK11059
 	 TCNT0 = 0xF6; //reload counter value
 #endif
 #ifdef CLOCK73728
 	 TCNT0 = 0x8D; //reload counter value
 #endif	 
-WDR();
 
 }
 

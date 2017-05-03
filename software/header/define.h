@@ -30,5 +30,6 @@ enum STATUS{
 	IDLE=0,
 	RING=1,
 	MSG=2,
+	GPS=3,
 	CALLING
 };

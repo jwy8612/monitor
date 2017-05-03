@@ -4,19 +4,11 @@
 #include "string.h"
 #include "init.h"
 #include "func.h"
+#include "stdlib.h"
 
-int doneFlag=0;
-int errflag;
-int readflag;
-int keyflag;
-u8 keyBuff[6];
-u8 key_old[6];
+u8 msFlag;
 u8 phnum[12];
-u8 *cmdbuff[4];
-int shefang;
-int jianting;
-int newms;
-int startFlag;
+u8 *cmdbuff[3];
 u8 rIndex=0;
 u8 wIndex=0;
 
@@ -24,6 +16,26 @@ int cmdNum=0;
 int cmdLength[4];
 
 enum STATUS status;
+
+void delay(int i){
+	while(i){
+		int j=1000;
+		i--;
+		while(j){j--;
+
+		}
+	}
+}
+
+void led(int i,int enable){
+	if(enable){
+		PORTA|=1<<i;
+	}
+	else{
+		PORTA&=~(1<<i);
+	}
+}
+
 void waitInfo(u8 * temp, u8 len){
 	int flag = 0;
 	int i;
@@ -43,7 +55,7 @@ void waitInfo(u8 * temp, u8 len){
 
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -78,7 +90,7 @@ u8 waitResult(void){
 
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(1==flag){
@@ -107,7 +119,7 @@ u8 waitPhnum(u8 *buff){
 			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -134,7 +146,7 @@ u8 waitCallPhnum(u8 *buff){
 			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -145,7 +157,7 @@ u8 waitCallPhnum(u8 *buff){
 	return flag;
 }
 
-
+#if 0
 u8 waitKey(u8 *buff, u8 *newkey){
 	int flag = 0;
 	int i;
@@ -172,7 +184,7 @@ u8 waitKey(u8 *buff, u8 *newkey){
 			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 			if(flag){
@@ -222,127 +234,234 @@ u8 waitCmd(void){
 	}
 	wIndex++;
 	cmdNum--;		
-	if(wIndex==4){
+	if(wIndex==3){
 		wIndex=0;
 	}
 	return flag;
 }
-	
-void AT_init(void)
+#endif	
+void CGATT_init(u8 enable)
 {
-	int i;
-	u8 flag =0;
-	USART_send_str("AT+CMGF=1");//ÉèÖÃTXT ¸ñÊ½
-
-}
-void delay(int i){
-	while(i){
-		int j=1000;
-		i--;
-		while(j){j--;
-
+	if(enable){
+		USART_send_str("AT+CGATT=1");
+		while(!waitResult()){
+			USART_send_str("AT+CGATT=0");
+			if(waitResult()){
+				USART_send_str("AT+CGATT=1");
+			}
 		}
 	}
-}
+	else{
+		USART_send_str("AT+CGATT=0");
+		while(!waitResult()){
+			USART_send_str("AT+CGATT=0");
+		}
 
-void led(int i,int enable){
+	}
+}
+void CGDCONT_init(u8 enable)
+{
 	if(enable){
-		PORTA|=1<<i;
+		USART_send_str("AT+CGDCONT=1,\"IP\",\"CMNET\"");
+		while(!waitResult()){
+			USART_send_str("AT+CGDCONT=0");
+			if(waitResult()){
+				USART_send_str("AT+CGDCONT=1,\"IP\",\"CMNET\"");
+			}
+		}
 	}
 	else{
-		PORTA&=~(1<<i);
+		USART_send_str("AT+CGDCONT=0");
+		while(!waitResult()){
+			USART_send_str("AT+CGDCONT=0");
+		}
+
 	}
 }
-void main(void ){
-	u8 ret;
-	int i;
-	u8 cmdbufferr[4][128];
-	u8 tempPhNum[12];
-	u8 tempKey[6];
+
+void CGACT_init(u8 enable)
+{
+	if(enable){
+		USART_send_str("AT+CGACT=1,1");
+		while(!waitResult()){
+			USART_send_str("AT+CGACT=0");
+			if(waitResult()){
+				USART_send_str("AT+CGACT=1,1");
+			}
+		}
+	}
+	else{
+		USART_send_str("AT+CGACT=0");
+		while(!waitResult()){
+			USART_send_str("AT+CGACT=0");
+		}
+
+	}
+}
+void GPSStart(void)
+{
+		USART_send_str("AT+GPS=1");
+		waitResult();
+#if 0
+		while(!waitResult()){
+			USART_send_str("AT+GPS=0");
+			if(waitResult()){
+				USART_send_str("AT+GPS=1");
+			}
+		}
+		#endif
+}
+
+void GPSClose(void)
+{
+		USART_send_str("AT+GPS=0");
+		while(!waitResult()){
+			USART_send_str("AT+GPS=0");
+
+		}
+}
+void GPSRD(int sec){
+	u8 temp[12];
+	u8 a[4];
+	memset(temp,0,12);
+	memcpy(temp,"AT+GPSRD=",9);
+	itoa(a,sec,10);
+	strcat(temp,a);
+	USART_send_str(temp);
+	//USART_send_str("AT+GPSRD=5");
+	waitResult();
+}
+
+void CIPStart(void)
+{
+		USART_send_str("AT+CIPSTART=\"TCP\",\"114.215.44.97\",9898");
+		while(!waitResult()){
+			USART_send_str("AT+CIPCLOSE");
+			if(waitResult()){
+				USART_send_str("AT+CIPSTART=\"TCP\",\"114.215.44.97\",9898");
+			}
+		}
+}
+
+void CIPClose(void){
+	USART_send_str("AT+CIPCLOSE");
+	while(!waitResult()){
+		USART_send_str("AT+CIPCLOSE");
+	}
+}
+
+u8 CIPSend(char * str){
+	USART_send_str("AT+CIPSEND");
+	msFlag = 0;
+	while(!msFlag);
 	
-	for(i=0;i<4;i++){
+	while(*(str++)!= 0){
+		USART_Transmit(*(str-1));
+	}
+	
+	USART_Transmit(0x1a);
+	if(waitResult()){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+void main(void ){
+	int i;
+	int j;
+	u8 cmdbufferr[3][100];
+	u8 tempPhNum[12];
+	u8 gpsFlag=0;
+	u8 velFlag=0;
+	u8 lat[12];
+	u8 lng[12];
+	u8 vel[12];
+	u8 tmp=0;
+	u8 tt[3];
+	for(i=0;i<3;i++){
 		cmdbuff[i] = cmdbufferr[i];
 	}
 	init_devices();
 	waitInfo("+CREG: 1",8);
 	led(0,1);
 	
-	AT_init();
-	while(!waitResult()){
-		AT_init();
-	}
+	GPSStart();
+	GPSRD(10);
 	led(1,1);
-	while(0x80!=EEPROM_read_byte(userFlagAddr)){
-		if(waitPhnum(phnum)){
-			if(waitKey(key_old,keyBuff)){
-				if(!memcmp(key_old,"000000",key_length)){
-					EEPROM_write(phnum_addr,phnum,phnum_length);
-					EEPROM_write(key_addr,keyBuff,key_length);
-					EEPROM_write_byte(userFlagAddr,0x80);
-				}
-			}
-		}
-	}
-	EEPROM_read(phnum_addr,phnum,phnum_length);
-	EEPROM_read(key_addr,keyBuff,key_length);
-	send_message("welcome!");
+	CGATT_init(1);
+	
 	led(2,1);
+	CGDCONT_init(1);
+	
+	led(3,1);
+	CGACT_init(1);
+	led(4,1);
+	CIPStart();
+	led(5,1);
+	
 	while(1){
 		if(cmdNum>0){
+			
+			EEPROM_write(0,cmdbuff[wIndex],cmdLength[wIndex]);
 			for(i=0;i<cmdLength[wIndex]-3;i++){
 				if(!memcmp(cmdbuff[wIndex]+i,"RING",4)){
+					//////////////////////////////test
+					USART_send_str("ATA");
+					waitInfo("CONNECT",7);
 					status = RING;
 				}
-				if(!memcmp(cmdbuff[wIndex]+i,"MESSAGE",7)){
-					status = MSG;
+			}
+			for(i=0;i<cmdLength[wIndex]-5;i++){
+				if(!memcmp(cmdbuff[wIndex]+i,"GPGGA,",6)){
+					
+					led(6,1);
+					memset(lat,0,12);
+					memset(lng,0,12);
+					i+=6;
+					while(memcmp(cmdbuff[wIndex]+i,",",1)){
+						i++;
+					}
+					if(memcmp(cmdbuff[wIndex]+i+1,",",1)){
+						memcpy(lat,cmdbuff[wIndex]+i+1,10);
+						memcpy(lng,cmdbuff[wIndex]+i+14,11);
+						break;
+					}
+
+				}
+
+			}
+			for(i=0;i<cmdLength[wIndex]-5;i++){
+				if(!memcmp(cmdbuff[wIndex]+i,"GPVTG,",6)){
+					i+=6;
+					j=0;
+					memset(vel,0,12);
+					while(memcmp(cmdbuff[wIndex]+i,"N,",2)){
+						i++;
+					}
+					
+					while(*(cmdbuff[wIndex]+i+2+j)!=','){
+						vel[j]=*(cmdbuff[wIndex]+i+2+j);
+						j++;
+					}
+					status = GPS;
+					break;
+
 				}
 			}
 			wIndex++;
 			cmdNum--;		
-			if(wIndex==4){
+			if(wIndex==3){
 				wIndex=0;
 			}
 		}
-		//else{
 			switch(status){
 				case IDLE:{
 					break;
 				}
-				case MSG :{
-					if(waitPhnum(tempPhNum)){
-						if(memcmp(tempPhNum,phnum,phnum_length)){
-							if(waitKey(tempKey,keyBuff)){
-								if(!memcmp(keyBuff,tempKey,key_length)){
-									memcpy(phnum,tempPhNum,phnum_length);
-									memcpy(keyBuff,tempKey,key_length);
-									EEPROM_write(phnum_addr,phnum,phnum_length);
-									EEPROM_write(key_addr,keyBuff,key_length);
-									send_message("OK!");
-								}
-								else{
-									send_message("wrong password!");
-
-								}
-							}
-						}
-						else{
-							ret = waitCmd();
-							if(1==ret){
-								send_message("OK!");
-							}
-							if(0==ret){
-								send_message("wrong command!");
-							}
-							
-							if(2==ret){
-								send_message("wrong password!");
-							}
-						}
-					}
-					status = IDLE;
-					break;
-				}
 				case RING:{
+					break;//////////////////test
 					USART_send_str("AT+CLCC");
 					waitCallPhnum(tempPhNum);
 					if(!memcmp(tempPhNum,phnum,phnum_length)){
@@ -358,175 +477,40 @@ void main(void ){
 
 					break;
 				}
+				case GPS:{
+					
+					u8 tempbuff[100];
+					
+					led(7,1);
+					memset(tempbuff,0,100);
+					memcpy(tempbuff,"{\"id\":\"",7);
+					strcat(tempbuff,"1234567887654321");
+					strcat(tempbuff,"\",\"lat\":\"");
+					strcat(tempbuff,lat);
+					strcat(tempbuff,"\",\"lng\":\"");
+					strcat(tempbuff,lng);
+					strcat(tempbuff,"\",\"vel\":\"");
+					strcat(tempbuff,vel);
+					strcat(tempbuff,"\",\"cap\":\"");
+					tmp++;
+					if(100==tmp){
+						tmp=0;
+					}
+					itoa(tt,tmp,10);
+					strcat(tempbuff,tt);
+					strcat(tempbuff,"\"}");
+					CIPSend(tempbuff);
+					status = IDLE;
+					break;
+				}
 				default:{
 					break;
 				}
 		
 			}
 
-			if(jianting){
-				jianting = 0;
-				phcall();
-			}
-
-			if(shefang){
-
-			}
-			
-		//}
 	}
 }
-#if 0
-while(1){
-	if(cmdNum>0){
-		15230092257
-		for(i=0;i<cmdLength[wIndex];i++){
-			
-			if(0==wIndex){
-				if(!memcmp(cmdPing+i,"+CREG: 1",8)){
-					initFlag=1;
-					break;
-				}
-			}
-			if(1==wIndex){
-				if(!memcmp(cmdPong+i,"+CREG: 1",8)){
-					initFlag=1;
-					break;
-				}
-			}
-		}
-		
-		wIndex++;
-		cmdNum--;		
-		if(wIndex==2){
-			wIndex=0;
-		}
-		
-		if(initFlag){
-			break;
-		}
-		#if 0
-		if(0==wIndex){
-			EEPROM_write(0x30+j*0x20,cmdPing,cmdLength[wIndex]);
-		}
-		if(1==wIndex){
-			EEPROM_write(0x30+j*0x20,cmdPong,cmdLength[wIndex]);
-		}
-		
-		wIndex++;
-		if(wIndex==2){
-			wIndex=0;
 
-		}
-		cmdNum--;
-		j++;
-		#endif
-	}
-}
-#endif
-#if 0
-while(1){
-	if(0x80!=EEPROM_read_byte(userFlagAddr)){
-		
-	}
-	else{
-			break;
-		}
-}
-#endif
-#if 0
-while(1){
-	switch(status){
-		case IDLE:{
-			led(3,1);
-			led(5,0);
-			led(7,0);
-			break;
-		}
-		case MSG :{
-			led(3,0);
-			led(5,1);
-			led(7,0);
-			break;
-		}
-		case RING:{
-			led(3,0);
-			led(5,0);
-			led(7,1);
-			startFlag = 1;
-			index = 0;
-			USART_send_str("AT+CLCC");
-			delay(1000);
-			for(i=0;i<100;i++){
-				if(!memcmp(mstxt+i,",\"",2)){
-					memcpy(tempBuffer,mstxt+i+2,phnum_length);
-				//	EEPROM_write(phnum_addr,tempBuffer,phnum_length);
-					
-					//EEPROM_read(phnum_addr,phnum, phnum_length);
-					if(!memcmp(tempBuffer,phnum,phnum_length)){
-						USART_send_str("ATA");
-						status = CALLING;
-					}
-					else{
-						USART_send_str("ATH");
-						status = IDLE;
-					}
-					break;
-				}
+//"{\"id\":\"1234567887654321\",\"lat\":\",,M,,0000*\",\"lng\":\"\",\"vel\":\"\",\"cat\":\"85\"}"
 
-			}
-			break;
-		}
-		case CALLING:{
-			led(3,1);
-			led(5,1);
-			led(7,1);
-			break;
-		}
-	}	
-}
-
-	#if 0
-	for(;;){
-
-		if(newms){
-			read_message();
-			newms = 0;
-		}
-		keyflag = EEPROM_read_byte(key_flag_addr);
-		if(!keyflag){
-			if(okflag){
-				okflag = 0;
-				if(!pass_key()){
-					keyflag = 1;
-					EEPROM_write_byte(key_flag_addr,1);
-					EEPROM_write(key_addr,key,key_length);
-
-				}
-				
-				if(!pass_phnum()){
-					;
-				}
-			}	
-		}
-		else{
-			if(okflag){
-				okflag = 0;
-				if(!pass_key()){
-					EEPROM_read(key_addr,key_old,key_length);
-					if(!memcmp(key,key_old,key_length)){
-						EEPROM_write(key_addr,key,key_length);
-					}
-
-				}
-				
-				if(!pass_phnum()){
-					;
-				}
-			}	
-		}
-
-
-	}
-	#endif
-	#endif
